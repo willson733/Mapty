@@ -16,7 +16,6 @@ class WorkOut {
     this.distance = distance; //in km
     this.duration = duration; //in min
   }
-<<<<<<< HEAD
   _setDescription() {
     // prettier-ignore
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -25,8 +24,6 @@ class WorkOut {
       months[this.date.getMonth()]
     } ${this.date.getDate()}`;
   }
-=======
->>>>>>> 76ae1cfdeeb9b681f9e96b99a45191c647e9c0e7
 }
 
 class Running extends WorkOut {
@@ -35,10 +32,7 @@ class Running extends WorkOut {
     super(coords, distance, duration);
     this.cadence = cadence;
     this.CalcPace();
-<<<<<<< HEAD
     this._setDescription();
-=======
->>>>>>> 76ae1cfdeeb9b681f9e96b99a45191c647e9c0e7
   }
   CalcPace() {
     // min/hr
@@ -52,10 +46,7 @@ class Cycling extends WorkOut {
     super(coords, distance, duration);
     this.elevationGain = elevationGain;
     this.CalcSped();
-<<<<<<< HEAD
     this._setDescription();
-=======
->>>>>>> 76ae1cfdeeb9b681f9e96b99a45191c647e9c0e7
   }
   CalcSped() {
     // km/min
@@ -77,7 +68,12 @@ class App {
   #mapEvent;
   #workout = [];
   constructor() {
+    // Get user's position
     this._getPosition();
+
+    // Get data fron local Storage
+    this._getLocalStorage();
+    // Attach event handlers
 
     form.addEventListener('submit', this._newWorkOut.bind(this));
 
@@ -111,6 +107,9 @@ class App {
     }).addTo(this.#map);
     //   Handling click on map
     this.#map.on('click', this._showForn.bind(this));
+    this.#workout.forEach(work => {
+      this._renderWorkoutMarker(work);
+    });
   }
 
   _showForn(mapE) {
@@ -181,7 +180,6 @@ class App {
     this.#workout.push(workout);
 
     // Render workout on map as marker
-<<<<<<< HEAD
     this._renderWorkoutMarker(workout);
 
     // Render workout on list
@@ -189,23 +187,13 @@ class App {
 
     //hide form + clear input field
     this._hideForm();
+
+    // set local storage to all workout
+
+    this._setLocalStorage();
   }
 
   _renderWorkoutMarker(workout) {
-=======
-    this.renderWorkoutMarker(workout);
-    // Render workout on list
-
-    //hide form + clear input field
-    inputDistance.value =
-      inputDuration.value =
-      inputCadence.value =
-      inputElevation.value =
-        '';
-  }
-
-  renderWorkoutMarker(workout) {
->>>>>>> 76ae1cfdeeb9b681f9e96b99a45191c647e9c0e7
     L.marker(workout.coords)
       .addTo(this.#map)
       .bindPopup(
@@ -280,6 +268,19 @@ class App {
       pan: {
         duration: 1,
       },
+    });
+  }
+  _setLocalStorage() {
+    localStorage.setItem('workout', JSON.stringify(this.#workout));
+  }
+  _getLocalStorage() {
+    const data = JSON.parse(localStorage.getItem('workout'));
+    console.log(data);
+
+    if (!data) return;
+    this.#workout = data;
+    this.#workout.forEach(work => {
+      this._renderWorkout(work);
     });
   }
 }
